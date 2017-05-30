@@ -2,7 +2,7 @@
 
 How to start:
 ------------
-Clone: 
+Clone (Git Bash): 
 ```
 git clone git@github.com:maxima-net/testcafe-visual-testing.git .
 ```
