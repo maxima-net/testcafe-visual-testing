@@ -18,20 +18,13 @@ var looksSameAsync = (ethalonPath, currentPath) => {
 fixture `Getting Started`
     .page `./index.html`
     .beforeEach(async t  => {
-        if (!fs.existsSync('img/' + ethalonPath)) {
-            await t
-                .takeScreenshot(ethalonPath);
-        }
+        await t.resizeWindow(800, 600);
+        if (!fs.existsSync('img/' + ethalonPath))
+            await t.takeScreenshot(ethalonPath);
     });
 
 test('My first test', async t => {
-    await t
-        .takeScreenshot(currentPath);
-    
+    await t.takeScreenshot(currentPath);
     var res = await looksSameAsync('img/' + ethalonPath, 'img/' + currentPath);
-
-    console.log(t);
-    
     await t.expect(!!res).eql(true, 'images is not equals');
-    
 });
