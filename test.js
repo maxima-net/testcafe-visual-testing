@@ -14,7 +14,6 @@ var looksSameAsync = (ethalonPath, currentPath) => {
     }
 )};
 
-
 fixture `Getting Started`
     .page `./index.html`
     .beforeEach(async t  => {
