@@ -16,7 +16,7 @@ var looksSameAsync = (ethalonPath, currentPath) => {
 
 
 fixture `Getting Started`
-    .page `file:///c%3A/Users/kucherov.maksim/Desktop/testcafe/index.html`
+    .page `./index.html`
     .beforeEach(async t  => {
         if (!fs.existsSync('img/' + ethalonPath)) {
             await t
