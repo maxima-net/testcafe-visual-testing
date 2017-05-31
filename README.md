@@ -10,7 +10,12 @@ Install dependencies:
 ```
 npm install
 ```
-Run test (test.js): 
+Run test (test.ts) for test instalation correctness: 
 ```
 npm run testcafe
 ```
+
+Run test with debug:
+1. Focus on current .ts or .js file with test fixture
+2. Set breakpoints
+3. Press F5
