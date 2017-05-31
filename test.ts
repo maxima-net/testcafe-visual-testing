@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as tc from "testcafe";
 import { looksSameAsync } from "./looks-same-async";
+import { ScreenComparer } from './ts/utils';
 
 const ethalonPath = 'ethalon/my-first-test.png';
 const currentPath = 'current/my-first-test.png';
@@ -14,7 +15,5 @@ fixture(`Getting Started`)
     });
 
 test('My first test', async t => {
-    await t.takeScreenshot(currentPath);
-    let res = await looksSameAsync('img/' + ethalonPath, 'img/' + currentPath);
-    await t.expect(!!res).eql(true, 'images is not equals');
+    await ScreenComparer.Compare(t, 'stait0');
 });
