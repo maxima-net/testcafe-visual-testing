@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "testcafe": "(testcafe chrome test.ts -s img) || exit 0"
+    "testcafe": "node testCafeRunner.js || exit 0"
   },
   "author": "",
   "license": "ISC",
