@@ -5,13 +5,16 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "testcafe": "(testcafe chrome test.js -s img) || exit 0"
+    "testcafe": "(testcafe chrome test.ts -s img) || exit 0"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "looks-same": "^3.2.1",
     "npm": "^4.6.1",
-    "testcafe": "^0.15.0"
+    "testcafe": "^0.16.0-alpha3"
+  },
+  "devDependencies": {
+    "typescript": "^2.3.4"
   }
 }
