@@ -1,8 +1,8 @@
 let looksSame = require("looks-same");
 
-export function looksSameAsync(ethalonPath : string, currentPath : string) : Promise<boolean> { 
+export function looksSameAsync(ethalonPath : string, currentPath : string, options :any = {}) : Promise<boolean> { 
     return new Promise((resolve, reject) => {
-        looksSame(ethalonPath, currentPath, (error, equal) => {
+        looksSame(ethalonPath, currentPath, options, (error, equal) => {
             if(error)
                 return reject(error);
             else
