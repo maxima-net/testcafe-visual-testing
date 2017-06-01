@@ -7,7 +7,7 @@ createTestCafe('localhost', 1337, 1338)
         const runner = testcafe.createRunner();
 
         return runner
-            .src(['test.ts'])
+            .src(['./tests/kitchensink.form.ts'])
             .browsers(['chrome'])
             .screenshots('img')
             .run();
