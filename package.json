@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dateformat": "^2.0.0",
     "looks-same": "^3.2.1",
     "npm": "^4.6.1",
     "testcafe": "^0.16.0-alpha3"
