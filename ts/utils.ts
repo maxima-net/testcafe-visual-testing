@@ -2,7 +2,9 @@ import * as fs from "fs";
 import * as tc from "testcafe";
 import * as datefromat from "dateformat";
 import { looksSameAsync } from "../looks-same-async";
+let looksSame = require("looks-same");
 
+enum ScreenType { Ethalon, Current, Diff };
 
 export class ScreenComparer {
     private static initDate: Date;
@@ -14,41 +16,64 @@ export class ScreenComparer {
 
     static async Compare(testController : TestController, stateName: string) {
         let ethalonPath = this.GetEthalonScreensPath(testController, stateName);
-        if (!fs.existsSync(ethalonPath)){
+        if (!fs.existsSync(ethalonPath)) {
             await this.CreateEthalon(testController, stateName);
             await testController.expect(fs.existsSync(ethalonPath)).eql(true, "can't create ethalon");
-        }
-        else
+        } else {
             await this.CompareCore(testController, stateName);
+        }
     }
 
     static async CompareCore(testController : TestController, stateName: string) {
-        await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, false));
-        let res = await looksSameAsync(this.GetEthalonScreensPath(testController, stateName), this.GetScreenShootsPath(testController, stateName));
-        await testController.expect(!!res).eql(true, `images is not equals. State: ${stateName}`);
+        await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, ScreenType.Current));
+
+        let ethalonPath = this.GetEthalonScreensPath(testController, stateName);
+        let screenShotPath = this.GetScreenShootsPath(testController, stateName);
+        let isEqual = await looksSameAsync(ethalonPath, screenShotPath);
+
+        if(!isEqual) {
+            console.log('Create diff');
+            looksSame.createDiff({
+                reference: ethalonPath,
+                current: screenShotPath,
+                diff: this.GetDiffScreenPath(testController, stateName),
+                highlightColor: "rgba(255,0,255,50)"
+            }, async function(error) {
+                await testController.expect(false).eql(true, `can't create diff. State: ${stateName}`);
+            });
+        }
+        await testController.expect(isEqual).eql(true, `images is not equals. State: ${stateName}`);
     } 
     static async CreateEthalon(testController : TestController, stateName: string) {
-        await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, true));
+        await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, ScreenType.Ethalon));
     }
-
     static GetEthalonScreensPath(testController : TestController, stateName: string) : string {
-        return this.GetScreensPath(testController, stateName, false, true);
+        return this.GetScreensPath(testController, stateName, false, ScreenType.Ethalon);
     }
     static GetScreenShootsPath(testController : TestController, stateName: string) : string {
-        return this.GetScreensPath(testController, stateName, false, false);
+        return this.GetScreensPath(testController, stateName, false, ScreenType.Current);
     }
-    static GetScreensPath(testController : TestController, stateName: string, ignoreRoot: boolean, isEthalon: boolean) : string {
+    static GetDiffScreenPath(testController : TestController, stateName: string) : string {
+        return this.GetScreensPath(testController, stateName, false, ScreenType.Diff);
+    }
+
+    static GetScreensPath(testController : TestController, stateName: string, ignoreRoot: boolean, screenType: ScreenType) : string {
         let tc = testController as any;
         let screenShotPath = !ignoreRoot ? `${tc.testRun.opts.screenshotPath}/` : "";
         let fixtureName = tc.testRun.test.fixture.name;
         let testName = tc.testRun.test.name;
         let date = this.InitDate;
 
+        let isEthalon = screenType == ScreenType.Ethalon;
         let currentDateTime = !isEthalon 
             ? `${datefromat(date, "yyyy-dd-mm HH-MM-ss")}/` 
             : "";
         let screenFolderName = isEthalon ? "ethalon" : "current";
+
         let browserName = tc.testRun.browserConnection.browserInfo.browserName;
-        return `${screenShotPath}${fixtureName}/${testName}/${screenFolderName}/${currentDateTime}${stateName}/${browserName}.png`;
+        let screenFileName = screenType != ScreenType.Diff 
+            ? `${browserName}.png`
+            : `${browserName}_diff.png`;
+        return `${screenShotPath}${fixtureName}/${testName}/${screenFolderName}/${currentDateTime}${stateName}/${screenFileName}`;
     }
 }
