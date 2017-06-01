@@ -7,6 +7,8 @@ let looksSame = require("looks-same");
 enum ScreenType { Ethalon, Current, Diff };
 
 export class ScreenComparer {
+    static readonly HighlightColor = "rgba(255,0,255,100)";
+
     private static initDate: Date;
     static get InitDate(): Date {
         if (this.initDate === undefined) 
@@ -37,7 +39,7 @@ export class ScreenComparer {
                 reference: ethalonPath,
                 current: screenShotPath,
                 diff: this.GetDiffScreenPath(testController, stateName),
-                highlightColor: "rgba(255,0,255,50)"
+                highlightColor: this.HighlightColor
             }, async function(error) {
                 await testController.expect(false).eql(true, `can't create diff. State: ${stateName}`);
             });
