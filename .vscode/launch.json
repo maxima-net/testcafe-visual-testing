@@ -10,7 +10,7 @@
             "protocol": "inspector",
             "name": "Launch LayoutTester",
             "program": "${workspaceRoot}/node_modules/testcafe/bin/testcafe.js",
-            "args": [ "chrome", "${file}" ],
+            "args": [ "chrome", "${file}", "-s", "img" ],
             "cwd":"${workspaceRoot}"
         }
     ]

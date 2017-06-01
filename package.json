@@ -15,7 +15,8 @@
     "testcafe": "^0.16.0-alpha3"
   },
   "devDependencies": {
-    "typescript": "^2.3.4",
-    "@types/node": "^7.0.22"
+    "@types/jquery": "^2.0.45",
+    "@types/node": "^7.0.22",
+    "typescript": "^2.3.4"
   }
 }
