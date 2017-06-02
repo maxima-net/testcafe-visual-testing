@@ -28,7 +28,7 @@ if (fs.existsSync(imagePath)) {
                         var lastTestFolder = path.join(currentPath, currentFolders[currentFolders.length - 1]);//last dir in current
 
                         fs.readdirSync(lastTestFolder)
-                            .forEach(screenShotName => {
+                            .forEach((screenShotName, i) => {
                                 var img = path.join(lastTestFolder, screenShotName, 'chrome.png');
                                 var diff = path.join(lastTestFolder, screenShotName, 'chrome_diff.png');
                                 var ethImg = path.join(etalonPath, screenShotName, 'chrome.png');
@@ -41,7 +41,8 @@ if (fs.existsSync(imagePath)) {
                                     diff:    diff,
                                     etalon:  ethImg,
                                     failed:  failed ? 'failed' : '',
-                                    name:    screenShotName
+                                    name:    screenShotName,
+                                    index: i
                                 };
 
                                 result.push(forCase);

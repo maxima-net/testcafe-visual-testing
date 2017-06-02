@@ -1,94 +1,79 @@
 <html>
     <head>
         <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.1.0.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+
         <style>
-            .comparing-item {
-                position: relative;
-                border: 1px solid lightgray;
-                padding: 10px;
-                margin-top: 10px;
+
+            body {
+                padding-top: 50px;
             }
-            .comparing-item .image {
-                position: relative;
-                display: block;
-            }
-            .tabs {
-                
-            }
-            .tabs::after {
-                display: table;
-                content: "";
-                clear: both;
-                height: 1px;
-                background: gray;
-                width: 100%;
-                top: -1px;
-                position: relative;
-                z-index: -1;
-            }
-            .tabs .tab {
-                background: #eeeeee;
-                border: 1px solid  lightgray;
-                border-bottom: 1px solid  gray;
-                padding: 10px 20px;
-                float: left;
-                cursor: pointer;
-            }
-            .tabs .button {
-                background: #eeeeee;
-                border: 1px solid lightgray;
-                padding: 5px 15px;
-                float: right;
-                margin-left: 5px;
-            }
-            .tabs .tab.active {
-                background: lightgray;
-                border: 1px solid  gray;
-                border-bottom: 1px solid  #eeeeee;
-            }
+
             .screen-name {
                 color: green;
             }
+
             .screen-name.failed {
                 color: red;
             }
-            .colapsible {
-                display: none;
-                cursor: pointer;
-            }
-            .colapsible.visible {
-                display: block;
-            }
+            
         </style>
     </head>
     <body>
-        <h1>{{fixture}}</h1>
-        {{#items}}
-        <div class="comparing-item">
-            <h2 class="screen-name {{failed}}">{{name}}</h2>
-            <div class="colapsible">
-                <div class="tabs">
-                    <div class="tab change-current active">current</div>
-                    <div class="tab change-etalon">etalon</div>
-                    <div class="tab change-diff">diff</div>
-
-                    <div class="button etalon" data-current="{{current}}" data-etalon="{{etalon}}">make etalon</div>
-                    <div class="button mask" data-current="{{current}}" data-etalon="{{etalon}}">create mask</div>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">                
+                    <a class="navbar-brand" href="#">Screenshot Reporter</a>
                 </div>
-
-                <img class="image" src="{{current}}" data-current="{{current}}" data-etalon="{{etalon}}" data-diff="{{diff}}">
-                <div class="display">{{current}}</div>
             </div>
+        </nav>
+
+        <div class="container">
+
+            <h1>{{fixture}}</h1>
             
+            {{#items}}
+            <div class="row panel panel-default">
+                <div class="comparing-item panel-body">
+                    <a href="#item-{{index}}" data-toggle="collapse">
+                        <h3 class="screen-name {{failed}}" >{{name}}</h3>
+                    </a>
+                    <div id="item-{{index}}" class="collapse">
+
+                        <div class="navbar navbar-default">
+                            
+                            <div class="container-fluid">
+                                <ul class="nav navbar-nav">
+                                    <li class="change-current active"><a>Current</a></li>
+                                    <li class="change-etalon"><a>Etalon</a></li>
+                                    <li class="change-diff "><a>Diff</a></li>
+                                </ul>
+
+                                <div class="nav navbar-form navbar-right">
+                                    <div class="btn btn-danger button etalon" data-current="{{current}}" data-etalon="{{etalon}}">make etalon</div>
+                                    <div class="btn btn-danger button mask"  data-current="{{current}}" data-etalon="{{etalon}}">create mask</div>
+                                </div>
+                            </div>
+                        
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img class="image img-thumbnail" alt="{{current}}" src="{{current}}" data-current="{{current}}" data-etalon="{{etalon}}" data-diff="{{diff}}" />                   
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/items}}
         </div>
-        {{/items}}
+
         <script>
             $(function(){
 
                 function setImage(trigger, state) {
-                    var image = $(trigger).parents(".comparing-item").find(".image");
-                    var display = $(trigger).parents(".comparing-item").find(".display");
-                    display.text(image.data(state));
+                    var image = $(trigger).parents(".comparing-item").find(".image");                    
                     image.attr("src", image.data(state));
                 }
 
@@ -112,15 +97,11 @@
                         $.post({
                             url: "http://localhost:9000/" + action + "/",
                             data: {
-                                etalonPath: etalon,
-                                artefactPath: current
+                                etalonPath: "../" + etalon,
+                                artefactPath: "../" + current
                             }
                         });
                     });
-                });
-
-                $(".screen-name").click(function(){
-                   $(this).next().toggleClass("visible");
                 });
 
             });
