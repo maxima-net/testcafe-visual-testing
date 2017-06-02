@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "report": "start report.html & cd reporter-api & npm start",
     "start": "node index.js",
     "testcafe": "node testCafeRunner.js || exit 0",
     "testcafeTests": "node ts/unit_tests/testCafeRunner.js || exit 0"
