@@ -10,6 +10,7 @@ createTestCafe('localhost', 1337, 1338)
             .src(['./tests/kitchensink.form.ts'])
             .browsers(['chrome'])
             .screenshots('img')
+            .reporter('screenshot-reporter')
             .run();
     })
     .then(failedCount => {
