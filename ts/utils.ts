@@ -4,7 +4,7 @@ import * as datefromat from "dateformat";
 import { looksSameAsync } from "../looks-same-async";
 let looksSame = require("looks-same");
 
-enum ScreenType { Ethalon, Current, Diff };
+enum ScreenType { Etalon, Current, Diff };
 
 export class ScreenComparer {
     static readonly HighlightColor = "rgba(255,0,255,100)";
@@ -17,10 +17,10 @@ export class ScreenComparer {
     }
 
     static async Compare(testController : TestController, stateName: string) {
-        let ethalonPath = this.GetEthalonScreensPath(testController, stateName);
-        if (!fs.existsSync(ethalonPath)) {
-            await this.CreateEthalon(testController, stateName);
-            await testController.expect(fs.existsSync(ethalonPath)).eql(true, "can't create ethalon");
+        let etalonPath = this.GetEtalonScreensPath(testController, stateName);
+        if (!fs.existsSync(etalonPath)) {
+            await this.CreateEtalon(testController, stateName);
+            await testController.expect(fs.existsSync(etalonPath)).eql(true, "can't create etalon");
         } else {
             await this.CompareCore(testController, stateName);
         }
@@ -29,14 +29,14 @@ export class ScreenComparer {
     static async CompareCore(testController : TestController, stateName: string) {
         await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, ScreenType.Current));
 
-        let ethalonPath = this.GetEthalonScreensPath(testController, stateName);
+        let etalonPath = this.GetEtalonScreensPath(testController, stateName);
         let screenShotPath = this.GetScreenShootsPath(testController, stateName);
-        let isEqual = await looksSameAsync(ethalonPath, screenShotPath);
+        let isEqual = await looksSameAsync(etalonPath, screenShotPath);
 
         if(!isEqual) {
             console.log('Create diff');
             looksSame.createDiff({
-                reference: ethalonPath,
+                reference: etalonPath,
                 current: screenShotPath,
                 diff: this.GetDiffScreenPath(testController, stateName),
                 highlightColor: this.HighlightColor
@@ -46,11 +46,11 @@ export class ScreenComparer {
         }
         await testController.expect(isEqual).eql(true, `images is not equals. State: ${stateName}`);
     } 
-    static async CreateEthalon(testController : TestController, stateName: string) {
-        await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, ScreenType.Ethalon));
+    static async CreateEtalon(testController : TestController, stateName: string) {
+        await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, ScreenType.Etalon));
     }
-    static GetEthalonScreensPath(testController : TestController, stateName: string) : string {
-        return this.GetScreensPath(testController, stateName, false, ScreenType.Ethalon);
+    static GetEtalonScreensPath(testController : TestController, stateName: string) : string {
+        return this.GetScreensPath(testController, stateName, false, ScreenType.Etalon);
     }
     static GetScreenShootsPath(testController : TestController, stateName: string) : string {
         return this.GetScreensPath(testController, stateName, false, ScreenType.Current);
@@ -66,11 +66,11 @@ export class ScreenComparer {
         let testName = tc.testRun.test.name;
         let date = this.InitDate;
 
-        let isEthalon = screenType == ScreenType.Ethalon;
-        let currentDateTime = !isEthalon 
+        let isEtalon = screenType == ScreenType.Etalon;
+        let currentDateTime = !isEtalon 
             ? `${datefromat(date, "yyyy-dd-mm HH-MM-ss")}/` 
             : "";
-        let screenFolderName = isEthalon ? "ethalon" : "current";
+        let screenFolderName = isEtalon ? "etalon" : "current";
 
         let browserName = tc.testRun.browserConnection.browserInfo.browserName;
         let screenFileName = screenType != ScreenType.Diff 

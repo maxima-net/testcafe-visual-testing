@@ -19,3 +19,8 @@ Run test with debug:
 1. Focus on current .ts or .js file with test fixture
 2. Set breakpoints
 3. Press F5
+
+Open report:
+```
+npm run report
+```
