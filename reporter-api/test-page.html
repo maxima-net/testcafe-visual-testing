@@ -13,7 +13,7 @@
         $("#updateEtalon").on("click", function() {
             $.ajax({
                 url: "http://localhost:9000/etalon", 
-                data: { etalonPath: "../img/ethalon/my-first-test.png", artefactPath: "../img/current/my-first-test.png" },
+                data: { etalonPath: "../img/etalon/my-first-test.png", artefactPath: "../img/current/my-first-test.png" },
                 method: "POST",            
                 mimeType: "application/json",
             })
@@ -28,8 +28,8 @@
                 url: "http://localhost:9000/mask",
                 mimeType: "application/json",
                 data: {
-                    etalonPath: "../img/ethalon/1.png",
-                    maskPath: "../img/ethalon/1_mask.png",
+                    etalonPath: "../img/etalon/1.png",
+                    maskPath: "../img/etalon/1_mask.png",
                     artefactPath: "../img/current/1.png"
                 },
                 method: "POST"

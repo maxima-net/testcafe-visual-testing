@@ -9,16 +9,16 @@ fixture(`ScreenComparerTests`)
     .page(`./test.html`)
     .beforeEach(async t  => await t.resizeWindow(800, 600));
 
-test('Test create ethalon', async t => {
+test('Test create etalon', async t => {
     let testScreensPath = (t as any).testRun.opts.screenshotPath;
     
     if(!!fs.existsSync(testScreensPath))
         fsExtra.removeSync(testScreensPath);
 
-    let ethalonPath = ScreenComparer.GetEthalonScreensPath(t, "testState0");
+    let etalonPath = ScreenComparer.GetEtalonScreensPath(t, "testState0");
     await ScreenComparer.Compare(t, 'testState0');
-    await t.expect(fs.existsSync(ethalonPath))
-            .eql(true, "ethalon doesn't created");
+    await t.expect(fs.existsSync(etalonPath))
+            .eql(true, "etalon doesn't created");
 
     let screenshotPath = ScreenComparer.GetScreenShootsPath(t, "testState0");
     await ScreenComparer.Compare(t, 'testState0');
