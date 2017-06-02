@@ -1,0 +1,27 @@
+{
+  "name": "etalon-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {    
+    "install-local": "npm install -g node-inspector & npm install",
+    "start": "node server.js 1 prod 127.0.0.1 3000 9000",
+    "debug": "node-debug server.js 0 dev 127.0.0.1 3000 9000"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "none"
+  ],
+  "author": "",
+  "license": "",
+  "devDependencies": {    
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cluster-service": "^2.0.0",
+    "express": "^4.15.3"
+  }
+}

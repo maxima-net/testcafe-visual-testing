@@ -1,0 +1,14 @@
+{
+  "routes": [  
+   {
+      "route": "/etalon",
+      "method": "POST",
+      "controller": "../controllers/etalon-controller"
+    },
+    {
+      "route": "/mask",
+      "method": "POST",
+      "controller": "../controllers/mask-controller"
+    }
+  ]
+}

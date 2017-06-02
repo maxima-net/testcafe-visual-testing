@@ -1,0 +1,42 @@
+<script src="https://code.jquery.com/jquery-3.2.1.js" ></script>
+
+<button id="updateEtalon">Update Etalon</button>
+<!-- <button id="updateEtalon">Generate Mask</button> -->
+
+<script>
+    
+    
+    
+
+    $(function() {
+    
+        $("#updateEtalon").on("click", function() {
+            $.ajax({
+                url: "http://localhost:9000/etalon", 
+                data: { etalonPath: "../img/ethalon/my-first-test.png", artefactPath: "../img/current/my-first-test.png" },
+                method: "POST",            
+                mimeType: "application/json",
+            })
+            .always(function(a) {
+                $("body").append("<div>" + a.statusText + "</div>");
+            });
+        });
+        
+        /*
+        $("#updateMask").on("click", function() {
+            $.ajax({
+                url: "http://localhost:9000/mask",
+                mimeType: "application/json",
+                data: {
+                    etalonPath: "../img/ethalon/1.png",
+                    maskPath: "../img/ethalon/1_mask.png",
+                    artefactPath: "../img/current/1.png"
+                },
+                method: "POST"
+            }).always(function(a) {
+                $("body").append("<div>" + a.statusText + "</div>");
+            });
+        });*/
+                
+    });
+</script>
