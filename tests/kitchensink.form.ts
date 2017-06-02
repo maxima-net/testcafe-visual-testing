@@ -39,10 +39,13 @@ const button = Selector(".dx-button").withText("Click me");
 test('Form', async t => {
         await menuItem;
         await t.wait(3000);
-        await ScreenComparer.Compare(t, "HomeView01");
+        await t.resizeWindow(490, 640);        
+        await ScreenComparer.Compare(t, "1.HomeView01");
         await t.click(menuItem);
         await t.wait(3000);
-        await ScreenComparer.Compare(t, "FormView01");
+        await ScreenComparer.Compare(t, "2.FormView01");
+        await ScreenComparer.Finish(t);
+
         //await t.expect(datebox['setValue'](new Date(2014, 4, 26))).notOk()
         //await ScreenComparer.Compare(t, "FormView02");
         // await t.typeText(loginInput, "MyName")
