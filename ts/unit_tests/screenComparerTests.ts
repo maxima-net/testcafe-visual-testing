@@ -21,6 +21,7 @@ fixture(`ScreenComparerTests`)
 
 test('Test create equal screenshots', async t => {
     await ScreenComparer.Compare(t, 'testState0');
+
     await t.expect(fs.existsSync(ScreenComparer.GetEthalonScreensPath(t, "testState0")))
             .eql(true, "ethalon doesn't created");
 
@@ -29,6 +30,8 @@ test('Test create equal screenshots', async t => {
             .eql(true, "screenshot doesn't created");
     await t.expect(fs.existsSync(ScreenComparer.GetDiffScreenPath(t, "testState0")))
             .eql(false, "screenshot diff was created");
+
+    await ScreenComparer.Finish(t);
 })
 test('Test create screenshot with diff', async t => {
     await ScreenComparer.Compare(t, 'testState0');
@@ -42,4 +45,6 @@ test('Test create screenshot with diff', async t => {
     
     await t.expect(fs.existsSync(ScreenComparer.GetDiffScreenPath(t, "testState0")))
             .eql(true, "screenshot diff was not created");
+    await t.expect(ScreenComparer.Errors.length == 1)
+            .eql(true, "errors not generated");
 })

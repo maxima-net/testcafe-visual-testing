@@ -6,10 +6,24 @@ let looksSame = require("looks-same");
 
 enum ScreenType { Ethalon, Current, Diff };
 
+class ErrorInfo {
+    constructor(diffPath: string, stateName: string) {
+        this.DiffPath = diffPath;
+        this.StateName = stateName;
+    }
+    DiffPath : string;
+    StateName : string;
+
+    GetErrorMessage() : string {
+        return `StateName: ${this.StateName}\r\nDiffPath: ${this.DiffPath}\r\n`;
+    }
+}
+
 export class ScreenComparer {
     static readonly HighlightColor = "rgba(255,0,255,100)";
-
+    static Errors : Array<ErrorInfo> = new Array<ErrorInfo>();
     private static initDate: Date;
+
     static get InitDate(): Date {
         if (this.initDate === undefined) 
             this.initDate = new Date();
@@ -33,9 +47,11 @@ export class ScreenComparer {
         let screenShotPath = this.GetScreenShootsPath(testController, stateName);
         let isEqual = await looksSameAsync(ethalonPath, screenShotPath);
 
-        if(!isEqual)
-            await createDiffAsync(this.GetDiffScreenPath(testController, stateName), ethalonPath, screenShotPath, this.HighlightColor);
-
+        if(!isEqual) {
+            let diffPath = this.GetDiffScreenPath(testController, stateName);
+            await createDiffAsync(diffPath, ethalonPath, screenShotPath, this.HighlightColor);
+            this.Errors.push(new ErrorInfo(diffPath, stateName));
+        }
         //await testController.expect(isEqual).eql(true, `images is not equals. State: ${stateName}`);
     }
     static async CreateEthalon(testController : TestController, stateName: string) {
@@ -49,6 +65,13 @@ export class ScreenComparer {
     }
     static GetDiffScreenPath(testController : TestController, stateName: string) : string {
         return this.GetScreensPath(testController, stateName, false, ScreenType.Diff);
+    }
+
+    static async Finish(testController : TestController) {
+        let errorString : string;
+        this.Errors.forEach(item => errorString += item.GetErrorMessage());
+        this.Errors = new Array<ErrorInfo>();
+        await testController.expect(!errorString).eql(true, `ScreenComparer tests FAILED!\r\n${errorString}`);
     }
 
     static GetScreensPath(testController : TestController, stateName: string, ignoreRoot: boolean, screenType: ScreenType) : string {
