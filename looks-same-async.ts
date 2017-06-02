@@ -10,10 +10,10 @@ export function looksSameAsync(etalonPath : string, currentPath : string, option
         });
     }
 )}
-export function createDiffAsync(diffPath: string, ethalonPath: string, screenShotPath: string, highlightColor: string) : Promise<void> {
+export function createDiffAsync(diffPath: string, etalonPath: string, screenShotPath: string, highlightColor: string) : Promise<void> {
     return new Promise<void>((resolve, reject) => {
         looksSame.createDiff({
-            reference: ethalonPath,
+            reference: etalonPath,
             current: screenShotPath,
             diff: diffPath,
             highlightColor: highlightColor
