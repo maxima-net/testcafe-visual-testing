@@ -5,25 +5,41 @@ import { ScreenComparer } from '../utils';
 import * as path from "path";
 import * as fsExtra from "fs-extra";
 
-fixture(`ScreenComparerTests`)
-    .page(`./test.html`)
-    .beforeEach(async t  => await t.resizeWindow(800, 600));
-
-test('Test create etalon', async t => {
-    let testScreensPath = (t as any).testRun.opts.screenshotPath;
-    
+function RemoveTestImages(testController: TestController) {
+    let testScreensPath = (testController as any).testRun.opts.screenshotPath;
     if(!!fs.existsSync(testScreensPath))
         fsExtra.removeSync(testScreensPath);
+}
 
-    let etalonPath = ScreenComparer.GetEtalonScreensPath(t, "testState0");
-    await ScreenComparer.Compare(t, 'testState0');
-    await t.expect(fs.existsSync(etalonPath))
-            .eql(true, "etalon doesn't created");
+fixture(`ScreenComparerTests`)
+    .page(`./test.html`)
+    .beforeEach(async t  => {
+        await t.resizeWindow(800, 600);
+        RemoveTestImages(t);
+    })
+    .afterEach(async t => RemoveTestImages(t));
 
-    let screenshotPath = ScreenComparer.GetScreenShootsPath(t, "testState0");
+test('Test create equal screenshots', async t => {
     await ScreenComparer.Compare(t, 'testState0');
-    await t.expect(fs.existsSync(screenshotPath))
+    await t.expect(fs.existsSync(ScreenComparer.GetEthalonScreensPath(t, "testState0")))
+            .eql(true, "ethalon doesn't created");
+
+    await ScreenComparer.Compare(t, 'testState0');
+    await t.expect(fs.existsSync(ScreenComparer.GetScreenShootsPath(t, "testState0")))
             .eql(true, "screenshot doesn't created");
+    await t.expect(fs.existsSync(ScreenComparer.GetDiffScreenPath(t, "testState0")))
+            .eql(false, "screenshot diff was created");
+})
+test('Test create screenshot with diff', async t => {
+    await ScreenComparer.Compare(t, 'testState0');
+    await t.expect(fs.existsSync(ScreenComparer.GetEthalonScreensPath(t, "testState0")))
+            .eql(true, "ethalon doesn't created");
 
-    fsExtra.removeSync(testScreensPath);
+    await t.resizeWindow(800, 500);
+    await ScreenComparer.Compare(t, 'testState0');
+    await t.expect(fs.existsSync(ScreenComparer.GetScreenShootsPath(t, "testState0")))
+            .eql(true, "screenshot doesn't created");
+    
+    await t.expect(fs.existsSync(ScreenComparer.GetDiffScreenPath(t, "testState0")))
+            .eql(true, "screenshot diff was not created");
 })

@@ -1,10 +1,10 @@
 import * as fs from "fs";
 import * as tc from "testcafe";
 import * as datefromat from "dateformat";
-import { looksSameAsync } from "../looks-same-async";
+import { looksSameAsync, createDiffAsync } from "../looks-same-async";
 let looksSame = require("looks-same");
 
-enum ScreenType { Etalon, Current, Diff };
+enum ScreenType { Ethalon, Current, Diff };
 
 export class ScreenComparer {
     static readonly HighlightColor = "rgba(255,0,255,100)";
@@ -17,10 +17,10 @@ export class ScreenComparer {
     }
 
     static async Compare(testController : TestController, stateName: string) {
-        let etalonPath = this.GetEtalonScreensPath(testController, stateName);
-        if (!fs.existsSync(etalonPath)) {
-            await this.CreateEtalon(testController, stateName);
-            await testController.expect(fs.existsSync(etalonPath)).eql(true, "can't create etalon");
+        let ethalonPath = this.GetEthalonScreensPath(testController, stateName);
+        if (!fs.existsSync(ethalonPath)) {
+            await this.CreateEthalon(testController, stateName);
+            await testController.expect(fs.existsSync(ethalonPath)).eql(true, "can't create ethalon");
         } else {
             await this.CompareCore(testController, stateName);
         }
@@ -29,25 +29,15 @@ export class ScreenComparer {
     static async CompareCore(testController : TestController, stateName: string) {
         await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, ScreenType.Current));
 
-        let etalonPath = this.GetEtalonScreensPath(testController, stateName);
+        let ethalonPath = this.GetEthalonScreensPath(testController, stateName);
         let screenShotPath = this.GetScreenShootsPath(testController, stateName);
-        let isEqual = await looksSameAsync(etalonPath, screenShotPath);
+        let isEqual = await looksSameAsync(ethalonPath, screenShotPath);
 
-        if(!isEqual) {
-            this.CreateDiff(testController, etalonPath, screenShotPath, stateName);
-        }
-        await testController.expect(isEqual).eql(true, `images is not equals. State: ${stateName}`);
+        if(!isEqual)
+            await createDiffAsync(this.GetDiffScreenPath(testController, stateName), ethalonPath, screenShotPath, this.HighlightColor);
+
+        //await testController.expect(isEqual).eql(true, `images is not equals. State: ${stateName}`);
     }
-    static CreateDiff(testController: TestController, etalonPath: string, screenShotPath: string, stateName: string) {
-        looksSame.createDiff({
-            reference: etalonPath,
-            current: screenShotPath,
-            diff: this.GetDiffScreenPath(testController, stateName),
-            highlightColor: this.HighlightColor
-        }, async function(error) {
-            await testController.expect(false).eql(true, `can't create diff. State: ${stateName}`);
-        });
-    } 
     static async CreateEthalon(testController : TestController, stateName: string) {
         await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, ScreenType.Ethalon));
     }
