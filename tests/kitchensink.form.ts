@@ -2,7 +2,7 @@
 // node ./node_modules/testcafe/bin/testcafe-with-v8-flag-filter.js chrome tests/kitchensink.form.ts  -s img
 
 
-import { Selector, ClientFunction } from 'testcafe';
+import { Selector } from 'testcafe';
 import { ScreenComparer } from '../ts/utils';
 
 fixture ('KitchenSink Form')

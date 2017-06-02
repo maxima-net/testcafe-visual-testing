@@ -14,9 +14,9 @@
     "dateformat": "^2.0.0",
     "fs-extra": "^3.0.1",
     "looks-same": "^3.2.1",
+    "mustache": "^2.3.0",
     "npm": "^4.6.1",
-    "testcafe": "^0.16.0-alpha3",
-    "testcafe-reporter-screenshot-reporter": "^1.0.2"
+    "testcafe": "^0.16.0-alpha3"
   },
   "devDependencies": {
     "@types/jquery": "^2.0.45",
