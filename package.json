@@ -7,6 +7,7 @@
     "report": "node report-generator/generator.js & start report.html & cd report-api & npm start",
     "start": "node index.js",
     "testcafe": "node testCafeRunner.js || exit 0",
+    "testcafeWithReport": "(npm run testcafe & npm run report) || exit 0",
     "testcafeTests": "node screen-comparer/unit_tests/testCafeRunner.js || exit 0"
   },
   "author": "",
