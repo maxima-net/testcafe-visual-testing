@@ -18,6 +18,11 @@
                 color: red;
             }
             
+            .panel-default:not(.failed) .change-diff,
+            .panel-default:not(.failed) .manage-buttons  {
+                display: none;
+            }
+
         </style>
     </head>
     <body>
@@ -34,7 +39,7 @@
             <h1>{{fixture}}</h1>
             
             {{#items}}
-            <div class="row panel panel-default">
+            <div class="row panel panel-default {{failed}}">
                 <div class="comparing-item panel-body">
                     <a href="#item-{{index}}" data-toggle="collapse">
                         <h3 class="screen-name {{failed}}" >{{name}}</h3>
@@ -47,10 +52,10 @@
                                 <ul class="nav navbar-nav">
                                     <li class="change-current active"><a>Current</a></li>
                                     <li class="change-etalon"><a>Etalon</a></li>
-                                    <li class="change-diff "><a>Diff</a></li>
+                                    <li class="change-diff"><a>Diff</a></li>
                                 </ul>
 
-                                <div class="nav navbar-form navbar-right">
+                                <div class="manage-buttons nav navbar-form navbar-right">
                                     <div class="btn btn-danger button etalon" data-current="{{current}}" data-etalon="{{etalon}}">make etalon</div>
                                     <div class="btn btn-danger button mask"  data-current="{{current}}" data-etalon="{{etalon}}">create mask</div>
                                 </div>
@@ -59,7 +64,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 text-center">
                                 <img class="image img-thumbnail" alt="{{current}}" src="{{current}}" data-current="{{current}}" data-etalon="{{etalon}}" data-diff="{{diff}}" />                   
                             </div>
                         </div>
