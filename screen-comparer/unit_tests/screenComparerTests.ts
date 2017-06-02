@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as tc from "testcafe";
-import { looksSameAsync } from "../../looks-same-async";
-import { ScreenComparer } from '../utils';
+import { looksSameAsync } from "../looks-same-async";
+import { ScreenComparer } from '../../screen-comparer';
 import * as path from "path";
 import * as fsExtra from "fs-extra";
 

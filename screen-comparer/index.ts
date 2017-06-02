@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as tc from "testcafe";
 import * as datefromat from "dateformat";
-import { looksSameAsync, createDiffAsync } from "../looks-same-async";
+import { looksSameAsync, createDiffAsync } from "./looks-same-async";
 let looksSame = require("looks-same");
 
 enum ScreenType { Etalon, Current, Diff };
