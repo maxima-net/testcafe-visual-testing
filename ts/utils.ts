@@ -68,7 +68,7 @@ export class ScreenComparer {
     }
 
     static async Finish(testController : TestController) {
-        let errorString : string;
+        let errorString = "";
         this.Errors.forEach(item => errorString += item.GetErrorMessage());
         this.Errors = new Array<ErrorInfo>();
         await testController.expect(!errorString).eql(true, `ScreenComparer tests FAILED!\r\n${errorString}`);
