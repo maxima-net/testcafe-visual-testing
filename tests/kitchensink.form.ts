@@ -3,7 +3,7 @@
 
 
 import { Selector } from 'testcafe';
-import { ScreenComparer } from '../ts/utils';
+import { ScreenComparer } from '../screen-comparer/utils';
 
 fixture ('KitchenSink Form')
     .page ('https://js.devexpress.com/Demos/KitchenSink/')

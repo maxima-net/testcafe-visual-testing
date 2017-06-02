@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as tc from "testcafe";
 import { looksSameAsync } from "./looks-same-async";
-import { ScreenComparer } from './ts/utils';
+import { ScreenComparer } from './screen-comparer/utils';
 
 fixture(`Getting Started`)
     .page(`./index.html`)

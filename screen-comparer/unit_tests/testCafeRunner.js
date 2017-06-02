@@ -7,7 +7,7 @@ createTestCafe('localhost', 1337, 1338)
         const runner = testcafe.createRunner();
 
         return runner
-            .src(['ts/unit_tests/screenComparerTests.ts'])
+            .src(['screen-comparer/unit_tests/screenComparerTests.ts'])
             .browsers(['chrome'])
             .screenshots('testImgs')
             .run();
