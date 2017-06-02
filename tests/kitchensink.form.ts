@@ -39,7 +39,6 @@ const button = Selector(".dx-button").withText("Click me");
 test('Form', async t => {
         await menuItem;
         await t.wait(3000);
-        await t.resizeWindow(490, 640);        
         await ScreenComparer.Compare(t, "1.HomeView01");
         await t.click(menuItem);
         await t.wait(3000);
