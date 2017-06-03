@@ -45,14 +45,13 @@ export class ScreenComparer {
 
         let etalonPath = this.GetEtalonScreensPath(testController, stateName);
         let screenShotPath = this.GetScreenShootsPath(testController, stateName);
-        let isEqual = await looksSameAsync(etalonPath, screenShotPath);
+        let isEqual = await looksSameAsync(etalonPath, screenShotPath, {ignoreCaret: true});
 
         if(!isEqual) {
             let diffPath = this.GetDiffScreenPath(testController, stateName);
             await createDiffAsync(diffPath, etalonPath, screenShotPath, this.HighlightColor);
             this.Errors.push(new ErrorInfo(diffPath, stateName));
         }
-        //await testController.expect(isEqual).eql(true, `images is not equals. State: ${stateName}`);
     }
     static async CreateEtalon(testController : TestController, stateName: string) {
         await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, ScreenType.Etalon));
