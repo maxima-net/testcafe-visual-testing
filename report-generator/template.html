@@ -19,7 +19,9 @@
             }
             
             .panel-default:not(.failed) .change-diff,
-            .panel-default:not(.failed) .manage-buttons  {
+            .panel-default:not(.failed) .change-currentmask,
+            .panel-default:not(.failed) .manage-buttons,
+            .panel-default:not(.etalonMaskExists) .change-etalonmask  {
                 display: none;
             }
 
@@ -39,7 +41,7 @@
             <h1>{{fixture}}</h1>
             
             {{#items}}
-            <div class="row panel panel-default {{failed}}">
+            <div class="row panel panel-default {{failed}} {{etalonMaskExists}}">
                 <div class="comparing-item panel-body">
                     <a href="#item-{{index}}" data-toggle="collapse">
                         <h3 class="screen-name {{failed}}" >{{name}}</h3>
@@ -51,13 +53,15 @@
                             <div class="container-fluid">
                                 <ul class="nav navbar-nav">
                                     <li class="change-current active"><a>Current</a></li>
+                                    <li class="change-currentmask"><a>Current Mask</a></li>
                                     <li class="change-etalon"><a>Etalon</a></li>
+                                    <li class="change-etalonmask"><a>Etalon Mask</a></li>
                                     <li class="change-diff"><a>Diff</a></li>
-                                </ul>
+                                </ul>                                
 
                                 <div class="manage-buttons nav navbar-form navbar-right">
-                                    <div class="btn btn-danger button etalon" data-current="{{current}}" data-etalon="{{etalon}}">make etalon</div>
-                                    <div class="btn btn-danger button mask"  data-current="{{current}}" data-etalon="{{etalon}}">create mask</div>
+                                    <div class="btn btn-danger button etalon" data-current="{{current}}" data-etalon="{{etalon}}">Set etalon from current state</div>
+                                    <div class="btn btn-danger button mask"  data-current="{{current}}" data-etalon="{{etalon}}" data-currentmask="{{currentMask}}" data-etalonmask="{{etalonMask}}">Copy current mask to etalon</div>
                                 </div>
                             </div>
                         
@@ -65,7 +69,8 @@
 
                         <div class="row">
                             <div class="col-md-12 text-center">
-                                <img class="image img-thumbnail" alt="{{current}}" src="{{current}}" data-current="{{current}}" data-etalon="{{etalon}}" data-diff="{{diff}}" />                   
+                                <img class="image img-thumbnail" alt="{{current}}" src="{{current}}" data-current="{{current}}" 
+                                    data-etalon="{{etalon}}" data-diff="{{diff}}" data-currentmask="{{currentMask}}" data-etalonmask="{{etalonMask}}" />                   
                             </div>
                         </div>
                     </div>
@@ -87,7 +92,7 @@
                     $(element).addClass("active");
                 }
 
-                $.each([ "current", "etalon", "diff" ], function(_, tabName){
+                $.each([ "current", "etalon", "diff", "currentmask", "etalonmask" ], function(_, tabName){
                      $(".change-" + tabName).click(function(){
                         setCurrent(this);
                         setImage(this, tabName);
@@ -96,14 +101,36 @@
 
                 $.each([ "etalon", "mask" ], function(_, buttonName){
                      $(".button." + buttonName).click(function(){
+                        var disabledClassName = 'disabled';
+                        var $button = $(this);
+                        
+                        if($button.hasClass(disabledClassName))
+                            return;
+
                         var action = buttonName;
-                        var etalon = $(this).data("etalon");
-                        var current = $(this).data("current");
-                        $.post({
+                        var etalon = $button.data("etalon");
+                        var current = $button.data("current");
+                        var currentMask = $button.data("currentmask");
+                        var etalonMask = $button.data("etalonmask");
+
+                        $button.addClass(disabledClassName);
+                        $.ajax({
                             url: "http://localhost:9000/" + action + "/",
+                            type: "POST",
+                            dataType: "text",
                             data: {
                                 etalonPath: "../" + etalon,
-                                artefactPath: "../" + current
+                                artefactPath: "../" + current,
+                                currentMaskPath: "../" + currentMask,
+                                etalonMaskPath: "../" + etalonMask
+                            },
+                            success : function() {
+                                $button.parents(".panel-default").addClass('etalonMaskExists');
+                                alert('Success');
+                            },
+                            error: function(jqxhr, textStatus) {
+                                $button.removeClass(disabledClassName);
+                                alert('error: ' + textStatus); 
                             }
                         });
                     });

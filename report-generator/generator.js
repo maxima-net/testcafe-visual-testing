@@ -31,18 +31,24 @@ if (fs.existsSync(imagePath)) {
                             .forEach((screenShotName, i) => {
                                 var img = path.join(lastTestFolder, screenShotName, 'chrome.png');
                                 var diff = path.join(lastTestFolder, screenShotName, 'chrome_diff.png');
+                                var currentMask = path.join(lastTestFolder, screenShotName, 'chrome_mask.png');
+                                var etalonMask = path.join(etalonPath, screenShotName, 'chrome_mask.png');
+                                var etalonMaskExists = fs.existsSync(etalonMask);
                                 var ethImg = path.join(etalonPath, screenShotName, 'chrome.png');
                                 
                                 
                                 var failed = fs.existsSync(path.resolve(diff));
 
                                 var forCase = {
-                                    current: img,
-                                    diff:    diff,
-                                    etalon:  ethImg,
-                                    failed:  failed ? 'failed' : '',
-                                    name:    screenShotName,
-                                    index: i
+                                    current:            img,
+                                    diff:               diff,
+                                    currentMask:        currentMask,
+                                    etalonMask:         etalonMask,
+                                    etalonMaskExists:   etalonMaskExists ? 'etalonMaskExists' : '',
+                                    etalon:             ethImg,
+                                    failed:             failed ? 'failed' : '',
+                                    name:               screenShotName,
+                                    index:              i
                                 };
 
                                 result.push(forCase);

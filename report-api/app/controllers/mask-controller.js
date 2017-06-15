@@ -3,7 +3,12 @@ function MaskController() {
 }
 
 function post(req, res, next) {    
-  res.status(200).json(req.body);
+    var etalonMaskPath = req.body.etalonMaskPath,
+        currentMaskPath = req.body.currentMaskPath;
+
+    var fs = require("fs");
+    fs.writeFileSync(etalonMaskPath, fs.readFileSync(currentMaskPath));
+    res.status(200).send();
 }
 
 MaskController.prototype = {
