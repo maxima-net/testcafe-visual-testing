@@ -53,10 +53,10 @@
                             <div class="container-fluid">
                                 <ul class="nav navbar-nav">
                                     <li class="change-current active"><a>Current</a></li>
-                                    <li class="change-currentmask"><a>Current Mask</a></li>
                                     <li class="change-etalon"><a>Etalon</a></li>
-                                    <li class="change-etalonmask"><a>Etalon Mask</a></li>
                                     <li class="change-diff"><a>Diff</a></li>
+                                    <li class="change-currentmask"><a>Current Mask</a></li>
+                                    <li class="change-etalonmask"><a>Etalon Mask</a></li>
                                 </ul>                                
 
                                 <div class="manage-buttons nav navbar-form navbar-right">
@@ -125,7 +125,8 @@
                                 etalonMaskPath: "../" + etalonMask
                             },
                             success : function() {
-                                $button.parents(".panel-default").addClass('etalonMaskExists');
+                                if(buttonName == "mask")
+                                    $button.parents(".panel-default").addClass('etalonMaskExists');
                                 alert('Success');
                             },
                             error: function(jqxhr, textStatus) {
