@@ -30,10 +30,10 @@ export class TestUtils {
     static HasOnlyBlackOrTransparencyPixels(imagePath: string): boolean {
         let result = true;
         this.ForEachPixel(imagePath, (pixel) => {
-            let isBlackPixel = pixel.Alpha == 0 && pixel.Blue == 0 && pixel.Green == 0 && pixel.Red == 0;
-            let isTransparencyPixel = pixel.Alpha == 255;
+            let isBlackPixel = pixel.Alpha == 255 && pixel.Blue == 0 && pixel.Green == 0 && pixel.Red == 0;
+            let isTransparencyPixel = pixel.Alpha == 0;
             if(!isBlackPixel && !isTransparencyPixel)
-                result = true;
+                result = false;
         });
         return result;
     }
