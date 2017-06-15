@@ -1,10 +1,10 @@
 import * as fs from "fs";
 import * as tc from "testcafe";
 import * as datefromat from "dateformat";
-import { looksSameAsync, createDiffAsync } from "./looks-same-async";
+import { ImageHelper } from "./imageHelper";
 let looksSame = require("looks-same");
 
-enum ScreenType { Etalon, Current, Diff };
+enum ScreenType { Etalon, Current, Diff, Mask };
 
 class ErrorInfo {
     constructor(diffPath: string, stateName: string) {
@@ -43,17 +43,18 @@ export class ScreenComparer {
     static async CompareCore(testController : TestController, stateName: string) {
         await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, ScreenType.Current));
 
-        let etalonPath = this.GetEtalonScreensPath(testController, stateName);
-        let screenShotPath = this.GetScreenShootsPath(testController, stateName);
-        let isEqual = await looksSameAsync(etalonPath, screenShotPath);
+        const etalonPath = this.GetEtalonScreensPath(testController, stateName);
+        const screenShotPath = this.GetScreenShootsPath(testController, stateName);
+        const isLooksSame = await ImageHelper.IsLooksSameAsync(etalonPath, screenShotPath);
 
-        if(!isEqual) {
-            let diffPath = this.GetDiffScreenPath(testController, stateName);
-            await createDiffAsync(diffPath, etalonPath, screenShotPath, this.HighlightColor);
+        if(!isLooksSame) {
+            const diffPath = this.GetDiffScreenPath(testController, stateName);
+            await ImageHelper.CreateDiffAsync(diffPath, etalonPath, screenShotPath, this.HighlightColor);
+            ImageHelper.CreateMask(diffPath, this.GetMaskScreenPath(testController, stateName));
             this.Errors.push(new ErrorInfo(diffPath, stateName));
         }
-        //await testController.expect(isEqual).eql(true, `images is not equals. State: ${stateName}`);
     }
+
     static async CreateEtalon(testController : TestController, stateName: string) {
         await testController.takeScreenshot(this.GetScreensPath(testController, stateName, true, ScreenType.Etalon));
     }
@@ -65,6 +66,9 @@ export class ScreenComparer {
     }
     static GetDiffScreenPath(testController : TestController, stateName: string) : string {
         return this.GetScreensPath(testController, stateName, false, ScreenType.Diff);
+    }
+    static GetMaskScreenPath(testController : TestController, stateName: string) : string {
+        return this.GetScreensPath(testController, stateName, false, ScreenType.Mask);
     }
 
     static async Finish(testController : TestController) {
@@ -88,9 +92,21 @@ export class ScreenComparer {
         let screenFolderName = isEtalon ? "etalon" : "current";
 
         let browserName = tc.testRun.browserConnection.browserInfo.browserName;
-        let screenFileName = screenType != ScreenType.Diff 
-            ? `${browserName}.png`
-            : `${browserName}_diff.png`;
+        let screenFileName = `${browserName}${this.GetImageNamePrefix(screenType)}.png`;
         return `${screenShotPath}${fixtureName}/${testName}/${screenFolderName}/${currentDateTime}${stateName}/${screenFileName}`;
+    }
+    static GetImageNamePrefix(screenType : ScreenType) : string {
+        let prefix;
+        switch (screenType) {
+            case ScreenType.Diff :
+                prefix = "_diff";
+                break;
+            case ScreenType.Mask :
+                prefix = "_mask";
+                break;
+            default : 
+                prefix = '';
+        }
+        return prefix;
     }
 }
