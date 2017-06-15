@@ -9,6 +9,7 @@ git clone git@github.com:maxima-net/testcafe-visual-testing.git .
 Install dependencies:  
 ```
 npm install
+npm install report-api
 ```
 Run test (test.ts) for test instalation correctness: 
 ```
