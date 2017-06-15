@@ -4,7 +4,7 @@ import * as datefromat from "dateformat";
 import { ImageHelper } from "./imageHelper";
 let looksSame = require("looks-same");
 
-enum ScreenType { Etalon, Current, Diff, Mask };
+enum ScreenType { Etalon, Current, Diff, CurrentMask, EtalonMask };
 
 class ErrorInfo {
     constructor(diffPath: string, stateName: string) {
@@ -45,12 +45,14 @@ export class ScreenComparer {
 
         const etalonPath = this.GetEtalonScreensPath(testController, stateName);
         const screenShotPath = this.GetScreenShootsPath(testController, stateName);
-        const isLooksSame = await ImageHelper.IsLooksSameAsync(etalonPath, screenShotPath);
+        let etalonMaskPath = this.GetEtalonMaskScreenPath(testController, stateName);
+        etalonMaskPath = fs.existsSync(etalonMaskPath) ? etalonMaskPath : null;
+        const isLooksSame = await ImageHelper.IsLooksSameAsync(etalonPath, screenShotPath, etalonMaskPath);
 
         if(!isLooksSame) {
             const diffPath = this.GetDiffScreenPath(testController, stateName);
             await ImageHelper.CreateDiffAsync(diffPath, etalonPath, screenShotPath, this.HighlightColor);
-            ImageHelper.CreateMask(diffPath, this.GetMaskScreenPath(testController, stateName));
+            ImageHelper.CreateMask(diffPath, this.GetCurrentMaskScreenPath(testController, stateName));
             this.Errors.push(new ErrorInfo(diffPath, stateName));
         }
     }
@@ -67,8 +69,11 @@ export class ScreenComparer {
     static GetDiffScreenPath(testController : TestController, stateName: string) : string {
         return this.GetScreensPath(testController, stateName, false, ScreenType.Diff);
     }
-    static GetMaskScreenPath(testController : TestController, stateName: string) : string {
-        return this.GetScreensPath(testController, stateName, false, ScreenType.Mask);
+    static GetCurrentMaskScreenPath(testController : TestController, stateName: string) : string {
+        return this.GetScreensPath(testController, stateName, false, ScreenType.CurrentMask);
+    }
+    static GetEtalonMaskScreenPath(testController : TestController, stateName: string) : string {
+        return this.GetScreensPath(testController, stateName, false, ScreenType.EtalonMask);
     }
 
     static async Finish(testController : TestController) {
@@ -85,7 +90,7 @@ export class ScreenComparer {
         let testName = tc.testRun.test.name;
         let date = this.InitDate;
 
-        let isEtalon = screenType == ScreenType.Etalon;
+        let isEtalon = screenType == ScreenType.Etalon || screenType == ScreenType.EtalonMask;
         let currentDateTime = !isEtalon 
             ? `${datefromat(date, "yyyy-dd-mm HH-MM-ss")}/` 
             : "";
@@ -101,7 +106,8 @@ export class ScreenComparer {
             case ScreenType.Diff :
                 prefix = "_diff";
                 break;
-            case ScreenType.Mask :
+            case ScreenType.EtalonMask :
+            case ScreenType.CurrentMask :
                 prefix = "_mask";
                 break;
             default : 
